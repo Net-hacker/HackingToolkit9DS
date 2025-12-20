@@ -313,7 +313,217 @@ ExtractNcchPartition() {
   elif [ $NcchPartition = "7" ]; then
     ExtractNCCH-O3DSUpdate
   else
-    echo "Not a valid Option"
+    echo "Not a valid Option!"
+  fi
+}
+
+ExtractNCCH-ExHeader() {
+  clear
+  echo ""
+  read -p "Write your 3DS|CXI filename (with extension): " FileName
+  clear
+  ./ctrtool --ncch=0 --exheader=DecryptedExHeader.bin $FileName > /dev/null
+  echo ""
+  echo "Extraction done!"
+  echo ""
+  read a
+  TitleMenu
+}
+
+ExtractNCCH-ExeFS() {
+  clear
+  echo ""
+  read -p "Write your 3DS|CXI filename (with extension): " FileName
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool --ncch=0 --exefs=DecryptedExeFS.bin $FileName > /dev/null
+  echo ""
+  read -p "Extraction done! Would you extract it now (n/y): " Ask2Extract
+  if [ $Ask2Extract = "Y" || $Ask2Extract = "y" ]; then
+    ExtractExeFS
+  else
+    TitleMenu
+  fi
+}
+
+ExtractNCCH-RomFS() {
+  clear
+  echo ""
+  read -p "Write your 3DS|CXI filename (with extension): " FileName
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool --ncch=0 --romfs=DecryptedRomFS.bin $FileName > /dev/null
+  echo ""
+  if [ $Ask2Extract = "Y" || $Ask2Extract = "y" ]; then
+    ExtractRomFS
+  else
+    TitleMenu
+  fi
+}
+
+ExtractNCCH-Manual() {
+  clear
+  echo ""
+  read -p "Write your 3DS|CXI filename (with extension): " FileName
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool --ncch=0 --romfs=DecryptedManual.bin $FileName > /dev/null
+  echo ""
+  if [ $Ask2Extract = "Y" || $Ask2Extract = "y" ]; then
+    ExtractManual
+  else
+    TitleMenu
+  fi
+}
+
+ExtractNCCH-N3DSUpdate() {
+  clear
+  echo ""
+  read -p "Write your 3DS|CXI filename (with extension): " FileName
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool --ncch=0 --romfs=DecryptedN3DSUpdate.bin $FileName > /dev/null
+  echo ""
+  if [ $Ask2Extract = "Y" || $Ask2Extract = "y" ]; then
+    ExtractN3DSUpdate
+  else
+    TitleMenu
+  fi
+}
+
+ExtractNCCH-O3DSUpdate() {
+  clear
+  echo ""
+  read -p "Write your 3DS|CXI filename (with extension): " FileName
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool --ncch=0 --romfs=DecryptedO3DSUpdate.bin $FileName > /dev/null
+  echo ""
+  if [ $Ask2Extract = "Y" || $Ask2Extract = "y" ]; then
+    ExtractO3DSUpdate
+  else
+    TitleMenu
+  fi
+}
+
+ExtractFilePartition() {
+  clear
+  echo ""
+  echo "1 = Extract contents from DecryptedExeFS.bin"
+  echo "2 = Extract contents from DecryptedRomFS.bin"
+  echo "3 = Extract contents from DecryptedManual.bin"
+  echo "4 = Extract contents from DecryptedDownloadPlay.bin"
+  echo "5 = Extract contents from DecryptedN3DSUpdate.bin"
+  echo "6 = Extract contents from DecryptedO3DSUpdate.bin"
+  echo ""
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  echo ""
+  read -p "Write your choice (1/2/3/4/5/6): " Partition
+  if [ $Partition = "1" ]; then
+    ExtractExeFS
+  elif [ $Partition = "2" ]; then
+    ExtractRomFS
+  elif [ $Partition = "3" ]; then
+    ExtractManual
+  elif [ $Partition = "4" ]; then
+    ExtractDownloadPlay
+  elif [ $Partition = "5" ]; then
+    ExtractN3DSUpdate
+  elif [ $Partition = "6" ]; then
+    ExtractO3DSUpdate
+  else
+    echo "Not a valid Option!"
+  fi
+}
+
+ExtractExeFS() {
+  clear
+  echo ""
+  read -p "Decompress the code.bin file (n/y): " DecompressCode
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  if [ $DecompressCode = "Y" || $DecompressCode = "y" ]; then
+    DC="--decompresscode"
+  else
+    DC=""
+  fi
+  ./ctrtool -t exefs --exefsdir=./ExtractedExeFS DecryptedExeFS.bin $DC > /dev/null
+  rm ExtractedExeFS/.bin > /dev/null
+  cp ExtractedExeFS/banner.bin banner.bin > /dev/null
+  ./3dstool -x -t banner -f banner.bin --banner-dir ExtractedBanner/ > /dev/null
+  mv ExtractedBanner/banner0.bcmdl ExtractedBanner/banner.cgfx > /dev/null
+  rm banner.bin > /dev/null
+  echo ""
+  echo "Extraction done"
+  echo ""
+  read a
+  TitleMenu
+}
+
+ExtractedRomFS() {
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool -t romfs --romfsdir=./ExtractedRomFS DecryptedRomFS.bin > /dev/null
+  echo ""
+  echo "Extraction done"
+  echo ""
+  read a
+  TitleMenu
+}
+
+ExtractManual() {
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool -t romfs --romfsdir=./ExtractedManual DecryptedManual.bin > /dev/null
+  echo ""
+  echo "Extraction done!"
+  echo ""
+  read a
+  TitleMenu
+}
+
+ExtractDownloadPlay() {
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool -t romfs --romfsdir=./ExtractedDownloadPlay DecryptedDownloadPlay.bin > /dev/null
+  echo ""
+  echo "Extraction done!"
+  echo ""
+  read a
+  TitleMenu
+}
+
+ExtractN3DSUpdate() {
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool -t romfs --romfsdir=./ExtractedN3DSUpdate DecryptedN3DSUpdate.bin > /dev/null
+  echo ""
+  echo "Extraction done!"
+  echo ""
+  read a
+  TitleMenu
+}
+
+ExtractO3DSUpdate() {
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  ./ctrtool -t romfs --romfsdir=./ExtractedO3DSUpdate DecryptedO3DSUpdate.bin > /dev/null
+  echo ""
+  echo "Extraction done!"
+  echo ""
+  read a
+  TitleMenu
 }
 
 TitleMenu
