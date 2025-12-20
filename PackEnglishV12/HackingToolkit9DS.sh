@@ -123,7 +123,7 @@ Rebuild3DS() {
   ./3dstool -cvtf cfa CustomPartition7.bin --header HeaderNCCH7.bin --romfs CustomO3DSUpdate.bin --romfs-auto-key > /dev/null
   for file in Custom*.bin; do
     if [ $(stat -c %s "$file") -le 20000 ]; then
-      rm "$file"
+      rm "$file" > /dev/null
     fi
   done
   ./3dstool -cvt01267f cci CustomPartition0.bin CustomPartition1.bin CustomPartition2.bin CustomPartition6.bin CustomPartition7.bin $OutputRom3DS.3DS --header HeaderNCSD.bin > /dev/null
@@ -136,6 +136,184 @@ Rebuild3DS() {
   echo ""
   read a
   TitleMenu
+}
+
+ExtractCIA() {
+  clear
+  echo ""
+  read -p "Write you input .CIA filename (without extension): " RomCIA
+  echo ""
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  echo ""
+  ./crtool --content=DecryptedApp $RomCIA.cia > /dev/null
+  mv DecryptedApp.000.* DecryptedPartition0.bin > /dev/null
+  mv DecryptedApp.001.* DecryptedPartition1.bin > /dev/null
+  mv DecryptedApp.002.* DecryptedPartition2.bin > /dev/null
+  ./3dstool -xvtf cxi DecryptedPartition0.bin --header HeaderNCCH0.bin --exh DecryptedExHeader.bin --exh-auto-key --exefs DecryptedExeFS.bin --exefs-auto-key --exefs-top-auto-key --romfs DecryptedRomFS.bin --romfs-auto-key --logo LogoLZ.bin --plain PlainRGN.bin > /dev/null
+  ./3dstool -xvtf cfa DecryptedPartition1.bin --header HeaderNCCH1.bin --romfs DecryptedManual.bin --romfs-auto-key > /dev/null
+  ./3dstool -xvtf cfa DecryptedPartition2.bin --header HeaderNCCH2.bin --romfs DecryptedDownloadPlay.bin --romfs-auto-key > /dev/null
+  rm DecryptedPartition0.bin > /dev/null
+  rm DecryptedPartition1.bin > /dev/null
+  rm DecryptedPartition2.bin > /dev/null
+  ./3dstool -xvtfu exefs DecryptedExeFS.bin --header HeaderExeFS.bin --exefs-dir ExtractedExeFS > /dev/null
+  ./3dstool -xvtf romfs DecryptedRomFS.bin --romfs-dir ExtractedRomFS > /dev/null
+  ./3dstool -xvtf romfs DecryptedManual.bin --romfs-dir ExtractedManual > /dev/null
+  ./3dstool -xvtf romfs DecryptedDownloadPlay.bin --romfs-dir ExtractedDownloadPlay > /dev/null
+  mv ExtractedExeFS/banner.bnr ExtractExeFS/banner.bin > /dev/null
+  mv ExtractedExeFS/icon.icn ExtractedExeFS/icon.bin > /dev/null
+  cp ExtractExeFS/banner.bin banner.bin > /dev/null
+  ./3dstool -xv -t banner -f banner.bin --banner-dir ExtractedBanner/ > /dev/null
+  rm banner.bin > /dev/null
+  mv ExtractedBanner/banner0.bcmdl ExtractedBanner/banner.cgfx > /dev/null
+  echo "Extraction done!"
+  echo ""
+  read a
+  TitleMenu
+}
+
+RebuildCIA() {
+  clear
+  echo ""
+  read -p "Write your output .CIA filename (without extension): " OutputRomCIA
+  read -p "Original minor version (write 0 if you don't know): " MinorVer
+  read -p "Original micro version (write 0 if you don't know): " MicroVer
+  clear
+  echo ""
+  echo "Please wait, rebuild in progress..."
+  echo ""
+  mv ExtractedBanner/banner.cgfx ExtractedBanner/banner0.bcmdl > /dev/null
+  ./3dstool -cv -t banner -f banner.bin --banner-dir ExtractedBanner/ > /dev/null
+  mv ExtractedBanner/banner0.bcmdl ExtractedBanner/banner.cgfx > /dev/null
+  mv banner.bin ExtractedExeFS/banner.bin > /dev/null
+  mv ExtractedExeFS/banner.bin ExtractedExeFS/banner.bnr > /dev/null
+  mv ExtractedExeFS/icon.bin ExtractedExeFS/icon.icn > /dev/null
+  ./3dstool -cvtfz exefs CustomExeFS.bin --header HeaderExeFS.bin --exefs-dir ExtractedExeFS > /dev/null
+  mv ExtractedExeFS/banner.bnr ExtractedExeFS/banner.bin > /dev/null
+  mv ExtractedExeFS/icon.icn ExtractedExeFS/icon.bin > /dev/null
+  ./3dstool -cvtf romfs CustomRomFS.bin --romfs-dir ExtractedRomFS > /dev/null
+  ./3dstool -cvtf romfs CustomManual.bin --romfs-dir ExtractedManual > /dev/null
+  ./3dstool -cvtf romfs CustomDownloadPlay.bin --romfs-dir ExtractedDownloadPlay > /dev/null
+  ./3dstool -cvtf cxi CustomPartition0.bin --header HeaderNCCH0.bin --exh DecryptedExHeader.bin --exh-auto-key --exefs CustomExeFS.bin --exefs-auto-key --exefs-top-auto-key --romfs CustomRomFS.bin --romfs-auto-key --logo LogoLZ.bin --plain PlainRGN.bin > /dev/null
+  ./3dstool -cvtf cfa CustomPartition1.bin --header HeaderNCCH1.bin --romfs CustomManual.bin --romfs-auto-key > /dev/null
+  ./3dstool -cvtf cfa CustomPartition2.bin --header HeaderNCCH2.bin --romfs CustomDownloadPlay.bin --romfs-auto-key
+  for file in Custom*.bin; do
+    if [ $(stat -c %s "$file") -le 20000 ]; then
+      rm "$file" > /dev/null
+    fi
+  done
+  if [ -f "CustomPartition0.bin" ]; then
+    ARG0="-content CustomPartition0.bin:0:0x00"
+  fi
+  if [ -f "CustomPartition1.bin" ]; then
+    ARG1="-content CustomPartition1.bin:1:0x01"
+  fi
+  if [ -f "CustomPartition2.bin" ]; then
+    ARG2="-content CustomPartition2.bin:2:0x02"
+  fi
+  ./makerom -target p -ignoresign -f cia $ARG0 $ARG1 $ARG2 -minor $MinorVer -micro $MicroVer -o $OutputRomCIA.cia > /dev/null
+  echo "Creation done!"
+  echo ""
+  read a
+  TitleMenu
+}
+
+DecryptedCXI() {
+  clear
+  echo ""
+  read -p "Write your input .CXI filename (without extension): " RomCXI
+  echo ""
+  read -p "Decompress the code.bin file (n/y): " DecompressCode
+  if [ DecompressCode = "Y" || DecompressCode = "y" ]; then
+    DC="--decompresscode"
+  else
+    DC=""
+  fi
+  clear
+  echo ""
+  echo "Please wait, extraction in progress..."
+  echo ""
+  ./ctrtool --ncch=0 --exheader=DecryptedExHeader.bin $RomCXI.cxi > /dev/null
+  ./ctrtool --ncch=0 --exefs=DecryptedExeFS.bin $RomCXI.cxi > /dev/null
+  ./ctrtool --ncch=0 --romfs=DecryptedRomFS.bin $RomCXI.cxi > /dev/null
+  ./ctrtool -t romfs --romfsdir=./ExtractedRomFS DecryptedRomFS.bin > /dev/null
+  ./ctrtool -t exefs --exefsdir=./ExtractedExeFS DecryptedExeFS.bin $DC > /dev/null
+  echo "Extraction done!"
+  echo ""
+  read a
+  TitleMenu
+}
+
+MassExtractor() {
+  clear
+  echo ""
+  for x in *.3ds *.cci; do
+    ./Unpack3DS.sh "$x"
+  done
+  for x in *.cia; do
+    ./UnpackCIA.sh "$x"
+  done
+  TitleMenu
+}
+
+MassRebuilder() {
+  clear
+  echo ""
+  for D in *.3ds *.cci; do
+    if [ -d "$D" ]; then
+        ./Repack3DS.sh "$(basename "$D")"
+    fi
+  done
+  for D in *.cia; do
+    if [ -d "$D" ]; then
+        ./RepackCIA.sh "$(basename "$D")"
+    fi
+  done
+  TitleMenu
+}
+
+ExtractBanner() {
+  clear
+  echo ""
+  ./3dstool -x -t banner -f banner.bin --banner-dir ExtractedBanner/ > /dev/null
+  mv ExtractedBanner/banner0.bcmdl ExtractedBanner/banner.cgfx > /dev/null
+  echo "Banner created"
+  echo ""
+  read a
+  TitleMenu
+}
+
+ExtractNcchPartition() {
+  clear
+  echo ""
+  echo "1 = Extract DecryptedExHeader.bin from NCCH0"
+  echo "2 = Extract DecryptedExeFS.bin from NCCH0"
+  echo "3 = Extract DecryptedRomFS.bin from NCCH0"
+  echo "4 = Extract DecryptedManual.bin from NCCH1"
+  echo "5 = Extract DecryptedDownloadPlay.bin from NCCH2"
+  echo "6 = Extract DecryptedN3DSUpdate.bin from NCCH6"
+  echo "7 = Extract DecryptedO3DSUpdate.bin from NCCH7"
+  echo ""
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  echo ""
+  read -p "Write your choice (1/2/3/4/5/6/7): " NcchPartition
+  if [ $NcchPartition = "1" ]; then
+    ExtractNCCH-ExHeader
+  elif [ $NcchPartition = "2" ]; then
+    ExtractNCCH-ExeFS
+  elif [ $NcchPartition = "3" ]; then
+    ExtractNCCH-RomFS
+  elif [ $NcchPartition = "4" ]; then
+    ExtractNCCH-Manual
+  elif [ $NcchPartition = "5" ]; then
+    ExtractNCCH-DownloadPlay
+  elif [ $NcchPartition = "6" ]; then
+    ExtractNCCH-N3DSUpdate
+  elif [ $NcchPartition = "7" ]; then
+    ExtractNCCH-O3DSUpdate
+  else
+    echo "Not a valid Option"
 }
 
 TitleMenu
