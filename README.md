@@ -1,10 +1,7 @@
 # HackingToolkit9DS
 
-![IMAGE](http://nsa39.casimages.com/img/2018/02/20/180220062531406418.png)
-
-UDDATE AS OF JUNE 21st 2018
-You have understood from my inactivity that the tool is not being updated anymore.
-It still work (or not, depend on peoples), but I'm not working anymore on it.
+UPDATE AS OF DECEMBER 20st 2025
+This is a Port to Linux. Nothing more the Project is still dead!
 
 With this tool, you'll be able to:
 - Extract and rebuild any .3DS file
@@ -23,18 +20,15 @@ Before report an issue, be sure:
 - To write or don't write the extension of your file when specified.
 - To have installed the setup package for your language (SetupXX.exe file).
 
-Changelog V12 (02/20/2018)
-- Fixed encrypted CIA rebuild process.
-- Removed installation check.
-
 The main tutorial can be found here:<br>
 https://gbatemp.net/threads/383055/
 
-Contacts:
+### Note!!!
+Extract 3DS should work, but the rest I haven't tested
+So if it doesn't work do a pull request or open an issue
+
+Contacts of original Repo:
 - Github : https://github.com/Asia81
 - Youtube : https://www.youtube.com/c/asia81
 - GBA Temp : https://gbatemp.net/members/asia81.356294/
 - I speak both french and english, feel free to speak to me in the language you want.
-
-If you fork it, or do anything with it, do what you want without asking.  
-But please, just give some credits, thanks!

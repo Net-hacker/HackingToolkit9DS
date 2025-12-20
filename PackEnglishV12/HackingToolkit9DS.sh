@@ -97,4 +97,45 @@ Extract3DS() {
   TitleMenu
 }
 
+Rebuild3DS() {
+  clear
+  echo ""
+  read -p "Write your output .3DS file (without extension): " OutputRom3DS
+  clear
+  echo ""
+  echo "Please wait, rebuild in progress..."
+  echo ""
+  mv ExtractedBanner/banner.cgfx ExtractedBanner/banner0.bcmdl > /dev/null
+  ./3dstool -cv -t banner -f banner.bin --banner-dir ExtractedBanner/ > dev/null
+  mv ExtractedBanner/banner0.bcmdl ExtractedBanner/banner.cgfx > /dev/null
+  mv banner.bin ExtractedExeFS/banner.bin > /dev/null
+  mv ExtractedExeFS/banner.bin ExtractedExeFS/banner.bnr > /dev/null
+  mv ExtractedExeFS/icon.bin ExtractedExeFS/icon.icn > /dev/null
+  ./3dstool -cvtf romfs CustomRomFS.bin --romfs-dir ExtractedRomFS > /dev/null
+  ./3dstool -cvtf romfs CustomManual.bin --romfs-dir ExtractedManual > /dev/null
+  ./3dstool -cvtf romfs CustomDownloadPlay.bin --romfs-dir ExtractedDownloadPlay > /dev/null
+  ./3dstool -cvtf romfs CustomN3DSUpdate.bin --romfs-dir ExtractedN3DSUpdate > /dev/null
+  ./3dstool -cvtf romfs CustomO3DSUpdate.bin --romfs-dir ExtractedO3DSUpdate > /dev/null
+  ./3dstool -cvtf cxi CustomPartition0.bin --header HeaderNCCH0.bin --exh DecryptedExHeader.bin --exh-auto-key --exefs CustomExeFS.bin --exefs-auto-key --exefs-top-auto-key --romfs CustomRomFS.bin --romfs-auto-key --logo LogoLZ.bin --plain PlainRGN.bin > /dev/null
+  ./3dstool -cvtf cfa CustomPartition1.bin --header HeaderNCCH1.bin --romfs CustomManual.bin --romfs-auto-key > /dev/null
+  ./3dstool -cvtf cfa CustomPartition2.bin --header HeaderNCCH2.bin --romfs CustomDownloadPlay.bin --romfs-auto-key > /dev/null
+  ./3dstool -cvtf cfa CustomPartition6.bin --header HeaderNCCH6.bin --romfs CustomN3DSUpdate.bin --romfs-auto-key > /dev/null
+  ./3dstool -cvtf cfa CustomPartition7.bin --header HeaderNCCH7.bin --romfs CustomO3DSUpdate.bin --romfs-auto-key > /dev/null
+  for file in Custom*.bin; do
+    if [ $(stat -c %s "$file") -le 20000 ]; then
+      rm "$file"
+    fi
+  done
+  ./3dstool -cvt01267f cci CustomPartition0.bin CustomPartition1.bin CustomPartition2.bin CustomPartition6.bin CustomPartition7.bin $OutputRom3DS.3DS --header HeaderNCSD.bin > /dev/null
+  rm CustomPartition0.bin > /dev/null
+  rm CustomPartition1.bin > /dev/null
+  rm CustomPartition2.bin > /dev/null
+  rm CustomPartition6.bin > /dev/null
+  rm CustomPartition7.bin > /dev/null
+  echo "Creation done!"
+  echo ""
+  read a
+  TitleMenu
+}
+
 TitleMenu
