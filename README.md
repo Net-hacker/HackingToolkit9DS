@@ -33,5 +33,5 @@ Contacts of original Repo:
 - GBA Temp : https://gbatemp.net/members/asia81.356294/
 - I speak both french and english, feel free to speak to me in the language you want.
 
-This Repo is closed during lost of usage
-moddy out
+This Repo will no longer be changed due to lost of motivation
+Thanks, moddi out.
