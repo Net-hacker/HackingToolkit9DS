@@ -32,3 +32,6 @@ Contacts of original Repo:
 - Youtube : https://www.youtube.com/c/asia81
 - GBA Temp : https://gbatemp.net/members/asia81.356294/
 - I speak both french and english, feel free to speak to me in the language you want.
+
+This Repo is closed during lost of usage
+moddy out
