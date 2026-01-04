@@ -1,6 +1,6 @@
 # HackingToolkit9DS
 
-UPDATE AS OF DECEMBER 20st 2025
+**UPDATE AS OF DECEMBER 20st 2025**<br>
 This is a Port to Linux. Nothing more the Project is still dead!
 
 With this tool, you'll be able to:
@@ -23,9 +23,9 @@ Before report an issue, be sure:
 The main tutorial can be found here:<br>
 https://gbatemp.net/threads/383055/
 
-### Note!!!
-Extract 3DS should work, but the rest I haven't tested
-So if it doesn't work do a pull request or open an issue
+> [!Note]
+> Extract 3DS should work, but the rest I haven't tested<br>
+> So if it doesn't work do a pull request or open an issue
 
 Contacts of original Repo:
 - Github : https://github.com/Asia81
