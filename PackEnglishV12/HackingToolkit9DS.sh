@@ -147,10 +147,10 @@ ExtractCIA() {
   echo ""
   echo "Please wait, extraction in progress..."
   echo ""
-  ./crtool --content=DecryptedApp $RomCIA.cia > /dev/null
-  mv DecryptedApp.000.* DecryptedPartition0.bin > /dev/null
-  mv DecryptedApp.001.* DecryptedPartition1.bin > /dev/null
-  mv DecryptedApp.002.* DecryptedPartition2.bin > /dev/null
+  ./ctrtool --contents=DecryptedApp $RomCIA.CIA > /dev/null
+  mv DecryptedApp.0000.* DecryptedPartition0.bin > /dev/null
+  mv DecryptedApp.0001.* DecryptedPartition1.bin > /dev/null
+  mv DecryptedApp.0002.* DecryptedPartition2.bin > /dev/null
   ./3dstool -xvtf cxi DecryptedPartition0.bin --header HeaderNCCH0.bin --exh DecryptedExHeader.bin --exh-auto-key --exefs DecryptedExeFS.bin --exefs-auto-key --exefs-top-auto-key --romfs DecryptedRomFS.bin --romfs-auto-key --logo LogoLZ.bin --plain PlainRGN.bin > /dev/null
   ./3dstool -xvtf cfa DecryptedPartition1.bin --header HeaderNCCH1.bin --romfs DecryptedManual.bin --romfs-auto-key > /dev/null
   ./3dstool -xvtf cfa DecryptedPartition2.bin --header HeaderNCCH2.bin --romfs DecryptedDownloadPlay.bin --romfs-auto-key > /dev/null
@@ -161,9 +161,9 @@ ExtractCIA() {
   ./3dstool -xvtf romfs DecryptedRomFS.bin --romfs-dir ExtractedRomFS > /dev/null
   ./3dstool -xvtf romfs DecryptedManual.bin --romfs-dir ExtractedManual > /dev/null
   ./3dstool -xvtf romfs DecryptedDownloadPlay.bin --romfs-dir ExtractedDownloadPlay > /dev/null
-  mv ExtractedExeFS/banner.bnr ExtractExeFS/banner.bin > /dev/null
+  mv ExtractedExeFS/banner.bnr ExtractedExeFS/banner.bin > /dev/null
   mv ExtractedExeFS/icon.icn ExtractedExeFS/icon.bin > /dev/null
-  cp ExtractExeFS/banner.bin banner.bin > /dev/null
+  cp ExtractedExeFS/banner.bin banner.bin > /dev/null
   ./3dstool -xv -t banner -f banner.bin --banner-dir ExtractedBanner/ > /dev/null
   rm banner.bin > /dev/null
   mv ExtractedBanner/banner0.bcmdl ExtractedBanner/banner.cgfx > /dev/null
